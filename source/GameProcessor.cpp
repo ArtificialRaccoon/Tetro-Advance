@@ -10,8 +10,7 @@ void GameProcessor::ProcessEvents()  { states.back()->AquireInput(this); }
 void GameProcessor::Render() 
 { 
 	states.back()->Render(this); 
-	VBlankIntrWait();
-	mmFrame();
+	mmFrame();		
 }
 
 void GameProcessor::DeallocateResources() {}

@@ -2,6 +2,7 @@
 #define GAMEOVERSTATE_H
 
 #include <cmath>
+#include "tonc.h"
 #include "GameContext.h"
 #include "GameConstants.h"
 #include "BaseState.h"

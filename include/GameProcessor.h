@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <iostream>
-#include <gba.h>
+#include <tonc.h>
 #include <maxmod.h>
 
 using namespace std;

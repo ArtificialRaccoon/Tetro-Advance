@@ -2,7 +2,9 @@
 
 void TitleState::InitState()
 {
-	mmStart( MOD_TITLE, MM_PLAY_LOOP );
+    mmStart( MOD_TITLE, MM_PLAY_LOOP );
+    memcpy16(pal_bg_mem, GAMEUIPal, GAMEUIPalLen/2);
+    memcpy32(&tile_mem[0][0], GAMEUITiles, GAMEUITilesLen/4);
 }
 
 void TitleState::Pause()
@@ -17,9 +19,7 @@ void TitleState::Resume()
 
 void TitleState::AquireInput(GameProcessor* game)
 {
-    int keys_pressed;
-    scanKeys();
-    keys_pressed = keysDown();
+    u16 keys_pressed = ~REG_KEYINPUT & KEY_MASK;
     if (keys_pressed & KEY_DOWN) selectedItem++;
     else if (keys_pressed & KEY_UP) selectedItem--;
     else if (keys_pressed & KEY_B) trigger = true;
@@ -48,7 +48,7 @@ void TitleState::ProcessInput(GameProcessor* game)
 
 void TitleState::Render(GameProcessor* game)
 {
-
+    memcpy16(se_mem[31], TITLESCREEN, sizeof(TITLESCREEN)/2);
 }
 
 void TitleState::UnloadResources()

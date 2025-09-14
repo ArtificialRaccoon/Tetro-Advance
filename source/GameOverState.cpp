@@ -20,19 +20,18 @@ void GameOverState::Resume()
 
 void GameOverState::AquireInput(GameProcessor* game)
 {
-    int keys_pressed;
-    scanKeys();
-    keys_pressed = keysDown();
-    if (keys_pressed & KEY_A)
+    u16 keys_pressed = ~REG_KEYINPUT & KEY_MASK;
+    if(keys_pressed & KEY_A)
     {
         GameState::Instance()->Reset();
         this->UnloadResources();
         game->ChangeState(GameState::Instance());
-    } else if (keys_pressed & KEY_B)
+    }
+    else if(keys_pressed & KEY_B)
     {
         this->UnloadResources();
         game->ChangeState(TitleState::Instance());
-    }   
+    }
 }
 
 void GameOverState::ProcessInput(GameProcessor* game)

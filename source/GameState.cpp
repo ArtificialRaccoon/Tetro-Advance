@@ -3,6 +3,8 @@
 void GameState::InitState()
 {
     mmStart( MOD_TETRIS, MM_PLAY_LOOP );
+    memcpy16(pal_bg_mem, GAMEUIPal, GAMEUIPalLen/2);
+    memcpy32(&tile_mem[0][0], GAMEUITiles, GAMEUITilesLen/4);
 }
 
 void GameState::Pause()
@@ -17,9 +19,7 @@ void GameState::Resume()
 
 void GameState::AquireInput(GameProcessor* game)
 {
-    int keys_pressed;
-    scanKeys();
-    keys_pressed = keysDown();
+    u16 keys_pressed = ~REG_KEYINPUT & KEY_MASK;
     if (keys_pressed & KEY_UP)
         GameContext::Instance()->GetCurrentPiece().Rotate(GameContext::Instance()->PlayGrid(), GameContext::Instance()->ChangedGrid());        
     else if (keys_pressed & KEY_DOWN)
@@ -61,6 +61,8 @@ void GameState::ProcessInput(GameProcessor* game)
 
 void GameState::Render(GameProcessor* game)
 {
+    memcpy16(se_mem[31], PLAYAREA, sizeof(PLAYAREA)/2);
+
     //Lines
     if(GameContext::Instance()->CurrentLinesChanged())
     {

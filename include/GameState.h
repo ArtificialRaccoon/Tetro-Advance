@@ -7,11 +7,14 @@
 #include <cmath>
 #include <cstdlib> 
 #include <ctime>
+#include "tonc.h"
 #include "GameContext.h"
 #include "GameConstants.h"
 #include "Tetromino.h"
 #include "GameOverState.h"
 #include "BaseState.h"
+#include "GAMEUI.h"
+#include "PLAYAREA.h"
 
 class GameState : public BaseState
 {

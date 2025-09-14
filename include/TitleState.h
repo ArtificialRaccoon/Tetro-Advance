@@ -2,12 +2,15 @@
 #define TITLESTATE_H
 
 #include <cmath>
+#include "tonc.h"
 #include "GameState.h"
 #include "GameContext.h"
 #include "GameConstants.h"
 #include "BaseState.h"
 #include "soundbank.h"
 #include "soundbank_bin.h"
+#include "GAMEUI.h"
+#include "TITLESCREEN.h"
 
 class TitleState : public BaseState
 {
