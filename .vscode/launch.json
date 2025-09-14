@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run GBA ROM in mGBA",
+            "type": "pwa-node",
+            "request": "launch",
+            "runtimeExecutable": "C:/Program Files/mGBA/mGBA.exe",
+            "args": [
+                "${workspaceFolder}/build/${workspaceFolderBasename}.gba"
+            ],
+            "preLaunchTask": "Rebuild GBA ROM"
+        }
+    ]
+}

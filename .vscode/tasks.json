@@ -1,0 +1,65 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build GBA ROM",
+            "type": "shell",
+            "command": "C:\\devkitPro\\msys2\\usr\\bin\\bash.exe",
+            "args": [
+                "--login",
+                "-i",
+                "-c",
+                "cd \"$GBA_WORKSPACE\" && make"
+            ],
+            "options": {
+                "env": {
+                    "GBA_WORKSPACE": "${workspaceFolder}".replace(/\\/g, "/")
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Clean GBA ROM",
+            "type": "shell",
+            "command": "C:\\devkitPro\\msys2\\usr\\bin\\bash.exe",
+            "args": [
+                "--login",
+                "-i",
+                "-c",
+                "cd \"$GBA_WORKSPACE\" && make clean"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "Rebuild GBA ROM",
+            "type": "shell",
+            "command": "C:\\devkitPro\\msys2\\usr\\bin\\bash.exe",
+            "args": [
+                "--login",
+                "-i",
+                "-c",
+                "cd \"$GBA_WORKSPACE\" && make clean && make"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "Launch mGBA",
+            "type": "shell",
+            "command": "\"C:/Program Files/mGBA/mGBA.exe\"",
+            "args": [
+                "${workspaceFolder}/build/${workspaceFolderBasename}.gba"
+            ],
+            "dependsOn": "Rebuild GBA ROM"
+        }
+        
+    ]
+}

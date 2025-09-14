@@ -1,0 +1,9 @@
+{
+    // Set up an environment variable for the GBA project path
+    "terminal.integrated.env.windows": {
+        "GBA_WORKSPACE": "${workspaceFolder}"
+    },
+
+    // Optional: replace backslashes with forward slashes in tasks
+    "gba.workspacePathUnix": "${workspaceFolder}" // we'll reference this in tasks.json
+}
