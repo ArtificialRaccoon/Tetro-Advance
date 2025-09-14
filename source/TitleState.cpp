@@ -2,8 +2,7 @@
 
 void TitleState::InitState()
 {
-    // Start playing module
-	mmStart( MOD_THEME, MM_PLAY_LOOP );
+	mmStart( MOD_TITLE, MM_PLAY_LOOP );
 }
 
 void TitleState::Pause()
@@ -29,8 +28,8 @@ void TitleState::AquireInput(GameProcessor* game)
 void TitleState::ProcessInput(GameProcessor* game)
 { 
     if(selectedItem < 0)
-        selectedItem = 2;
-    if(selectedItem > 2)
+        selectedItem = 1;
+    if(selectedItem > 1)
         selectedItem = 0;
 
     if(trigger)
@@ -39,11 +38,11 @@ void TitleState::ProcessInput(GameProcessor* game)
         if(selectedItem == 0)
         {
             this->UnloadResources();
+            GameState::Instance()->Reset();
+            game->ChangeState(GameState::Instance());
         }
         else if(selectedItem == 1)
             GameContext::Instance()->SwapRandomizer();
-        else
-            exit(0);
     }
 }
 
@@ -54,5 +53,5 @@ void TitleState::Render(GameProcessor* game)
 
 void TitleState::UnloadResources()
 {
-
+    mmStop();
 }

@@ -1,15 +1,14 @@
-#ifndef TITLESTATE_H
-#define TITLESTATE_H
+#ifndef GAMEOVERSTATE_H
+#define GAMEOVERSTATE_H
 
 #include <cmath>
-#include "GameState.h"
 #include "GameContext.h"
 #include "GameConstants.h"
 #include "BaseState.h"
-#include "soundbank.h"
-#include "soundbank_bin.h"
+#include "GameState.h"
+#include "TitleState.h"
 
-class TitleState : public BaseState
+class GameOverState : public BaseState
 {
     public:
         void InitState();
@@ -19,18 +18,14 @@ class TitleState : public BaseState
         void ProcessInput(GameProcessor* game);
         void Render(GameProcessor* game);
         void UnloadResources();
-        static TitleState* Instance()
+        static GameOverState* Instance()
         {
-            static TitleState mTitleState;
-            return &mTitleState;
+            static GameOverState mGameOverState;
+            return &mGameOverState;
         }
 
     protected:
-        TitleState() { } 
-
-    private:
-        int selectedItem = 0;
-        bool trigger = false;
+        GameOverState() { } 
 };
 
-#endif // TitleState_H
+#endif // GAMEOVERSTATE_H
