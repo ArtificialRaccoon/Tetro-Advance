@@ -22,6 +22,7 @@ class TitleState : public BaseState
         void ProcessInput(GameProcessor* game);
         void Render(GameProcessor* game);
         void UnloadResources();
+        void PrintText(std::string text, int x, int y);
         static TitleState* Instance()
         {
             static TitleState mTitleState;
@@ -33,6 +34,7 @@ class TitleState : public BaseState
 
     private:
         int selectedItem = 0;
+        int debounceTimer = 0;
         bool trigger = false;
 };
 

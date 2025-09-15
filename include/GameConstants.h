@@ -15,13 +15,16 @@ const int backgroundWidth = 40;
 const int backgroundHeight = 25;
 const int dialogWidth = 14;
 const int dialogHeight = 4;
-const int menuXStart = 140;
-const int menuYStart = 100;
-const int menuYRandom = 112;
-const int menuYExit = 124;
-const unsigned FLIPPED_HORIZONTALLY_FLAG  = 0x80000000;
-const unsigned FLIPPED_VERTICALLY_FLAG    = 0x40000000;
-const unsigned FLIPPED_DIAGONALLY_FLAG    = 0x20000000;
+const int menuXStart = 120;
+const int menuYStart = 78;
+const int menuYRandom = 94;
+const int BACKGROUND_LAYER_ID = 31;
+const int TEXT_LAYER_ID = 30;
+const int ACTION_LAYER_ID = 29;
+const int BLANK_TILE = 96;
+const int CURSOR_TILE = 189;
+const int CURSOR_TILE_POS_PLAY = 334;
+const int CURSOR_TILE_POS_SWAP = 398;
 const char ScoreKey = 0x45; //Nice.
 
 #endif // GAMECONSTANTS_H

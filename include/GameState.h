@@ -27,6 +27,7 @@ class GameState : public BaseState
         void Render(GameProcessor* game);
         void Reset();
         void UnloadResources();
+        void PrintText(std::string text, int x, int y);
         static GameState* Instance()
         {
             static GameState mGameState; 

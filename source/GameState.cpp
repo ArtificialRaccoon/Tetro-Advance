@@ -5,6 +5,8 @@ void GameState::InitState()
     mmStart( MOD_TETRIS, MM_PLAY_LOOP );
     memcpy16(pal_bg_mem, GAMEUIPal, GAMEUIPalLen/2);
     memcpy32(&tile_mem[0][0], GAMEUITiles, GAMEUITilesLen/4);
+    tte_init_chr4c(1, BG_CBB(2) | BG_SBB(TEXT_LAYER_ID), 0xF000, 0x1E, (u32)&sys8Font, NULL, NULL); //Need to change tghe 0x1E to the right colour index...
+    tte_erase_screen();
 }
 
 void GameState::Pause()
@@ -61,45 +63,17 @@ void GameState::ProcessInput(GameProcessor* game)
 
 void GameState::Render(GameProcessor* game)
 {
-    memcpy16(se_mem[31], PLAYAREA, sizeof(PLAYAREA)/2);
+    tte_erase_screen();
+    memcpy16(se_mem[BACKGROUND_LAYER_ID], PLAYAREA, sizeof(PLAYAREA)/2);
 
     //Lines
-    if(GameContext::Instance()->CurrentLinesChanged())
-    {
-        //rectfill(BUFFER, 186, 8, 210, 16, makecol(57,85,113));
-        //textout_ex(BUFFER, GameContext::Instance()->GAME_FONT, formatInteger(3, GameContext::Instance()->GetCurrentLines()).c_str(), 186, 8, makecol(255, 255, 255), -1);
-        GameContext::Instance()->SetCurrentLinesChanged(false);
-    }
+    PrintText(std::string("Lines: ") + formatInteger(3, GameContext::Instance()->GetCurrentLines()), 168, 8);
 
-    //Statistics
-    for(int i = 0; i < 7; i++)
-    {
-        if(GameContext::Instance()->TetrominoTallyChanged(i))
-        {
-            //rectfill(BUFFER, 56, 24 + (i * 24), 56 + (3 * 8), 24 + (i * 24) + 8, makecol(57,85,113));
-            //textout_ex(BUFFER, GameContext::Instance()->GAME_FONT, formatInteger(3, GameContext::Instance()->GetTetrominoTally(i)).c_str(), 56, 24 + (i * 24), makecol(255, 255, 255), -1);
-            GameContext::Instance()->SetTetrominoTallyChanged(i, false);
-        }
-    }
+    //Current Level
+    PrintText(std::string("Level: ") + formatInteger(2, GameContext::Instance()->GetCurrentLevel()), 168, 32);  
 
-    //Current Level   
-    if(GameContext::Instance()->CurrentLevelChanged())
-    {
-        //rectfill(BUFFER, 303, 12, 313, 20, makecol(101,101,101));
-        //textout_ex(BUFFER, GameContext::Instance()->GAME_FONT, formatInteger(2, GameContext::Instance()->GetCurrentLevel()).c_str(), 303, 12, makecol(255, 255, 255), -1);
-        GameContext::Instance()->SetCurrentLevelChanged(false);
-    }
-
-    //Scores
-    if(GameContext::Instance()->TopScoreChanged() || GameContext::Instance()->CurrentScoreChanged())
-    {
-        //rectfill(BUFFER, 262, 118, 310, 126, makecol(101,101,101));
-        //textout_ex(BUFFER, GameContext::Instance()->GAME_FONT, formatInteger(6, GameContext::Instance()->GetTopScore()).c_str(), 262, 118, makecol(255, 255, 255), -1); 
-        //rectfill(BUFFER, 262, 138, 310, 146, makecol(101,101,101)); 
-        //textout_ex(BUFFER, GameContext::Instance()->GAME_FONT, formatInteger(6, GameContext::Instance()->GetCurrentScore()).c_str(), 262, 138, makecol(255, 255, 255), -1); 
-        GameContext::Instance()->SetCurrentScoreChanged(false);
-        GameContext::Instance()->SetTopScoreChanged(false);
-    }
+    //Score
+    PrintText(std::string("Score: ") + formatInteger(6, GameContext::Instance()->GetCurrentScore()), 168, 56);
 
     //Draw Next Piece
     if(GameContext::Instance()->NextPieceChanged())
@@ -151,5 +125,14 @@ void GameState::Reset()
 
 void GameState::UnloadResources()
 {
+    mmStop();
+    tte_erase_screen();
+}
 
+void GameState::PrintText(std::string text, int x, int y)
+{    
+    char cursor[16];
+    snprintf(cursor, sizeof(cursor), "#{P:%d,%d}", x, y);
+    tte_write(cursor);
+    tte_write(text.c_str());
 }
