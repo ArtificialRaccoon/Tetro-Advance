@@ -1,18 +1,21 @@
 #ifndef TETROMINOSTATE_H
 #define TETROMINOSTATE_H
 
+#include "tonc.h"
+#include "GAMEUI.h"
 #include "GameConstants.h"
 
 class Tetromino 
 {
     public: //Functions
         Tetromino() {};
-        Tetromino(int type);        
+        Tetromino(int type);
+        void Clear();
         void Draw(bool preview = false);
         void LockPiece(int** playGrid, bool** changedGrid);
         void BlankoutPiece(bool** changedGrid);
         bool CanSpawn(int** playGrid);
-        bool CanLock(int** playGrid); 
+        bool CanLock(int** playGrid);
 
     public: //Movement Handlers
         void Left(int** playGrid, bool** changedGrid) 
@@ -67,7 +70,8 @@ class Tetromino
 
     private:
         void ResetTimer() { lockTimer = 0; }
-        void DrawBlock(int x, int y);
+        void DrawBlock(int x, int y, int screenSpaceX, int screenSpaceY);
+        void ClearBlock(int x, int y, int screenSpaceX, int screenSpaceY);
         bool CanMove(int** playGrid, int x, int y);
         bool CanRotate(int** playGrid, int nextRotation);
 

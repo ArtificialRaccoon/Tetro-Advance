@@ -16,22 +16,46 @@ Tetromino::Tetromino(int type)
 void Tetromino::Draw(bool preview)
 {
     int xPos = x;
-    if(preview)
-        xPos = 4 / 2 - 2; 
-
     for (int i = 0; i < 4; i++) 
     {
         for (int j = 0; j < 4; j++) 
         {
             if (this->shape[rotation] & (0x8000 >> (i * 4 + j)))
-                DrawBlock(xPos + j, this->y + i);
+            {
+                if (preview)
+                    DrawBlock(xPos + j, this->y + i, previewGridX, previewGridY);
+                else
+                    DrawBlock(xPos + j, this->y + i, playGridX, playGridY);
+            }
         }
     }
 }
 
-void Tetromino::DrawBlock(int x, int y) 
+void Tetromino::Clear()
 {
-    
+    int xPos = x;
+    for (int i = 0; i < 4; i++) 
+    {
+        for (int j = 0; j < 4; j++) 
+        {
+            if (this->shape[rotation] & (0x8000 >> (i * 4 + j)))
+                ClearBlock(xPos + j, this->y + i, previewGridX, previewGridY);
+        }
+    }
+} 
+
+void Tetromino::DrawBlock(int x, int y, int screenSpaceX, int screenSpaceY) 
+{
+    int mapIndex = (screenSpaceY + y) * 32 + (screenSpaceX + x);
+    u16 tileID = TETROMINO_TILE_START + this->Type;
+    se_mem[ACTION_LAYER_ID][mapIndex] = tileID;
+}
+
+void Tetromino::ClearBlock(int x, int y, int screenSpaceX, int screenSpaceY) 
+{
+    int mapIndex = (screenSpaceY + y) * 32 + (screenSpaceX + x);
+    u16 tileID = BLANK_TILE;
+    se_mem[ACTION_LAYER_ID][mapIndex] = tileID;
 }
 
 bool Tetromino::CanMove(int** playGrid, int newX, int newY) 

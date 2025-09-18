@@ -23,6 +23,7 @@ class GameState : public BaseState
         void Pause();
         void Resume();
         void AquireInput(GameProcessor* game);
+        void HandleInput(u16 keys_pressed);
         void ProcessInput(GameProcessor* game);
         void Render(GameProcessor* game);
         void Reset();
@@ -38,6 +39,12 @@ class GameState : public BaseState
         GameState() { }
         void DrawBackground();        
         std::string formatInteger(int leadingZeros, int value);  
+    
+    private:
+        int debounceTimer = 0;
+        unsigned short heldButtons = 0;
+        const int initial = 10;
+        const int repeat = 4;
 };
 
 #endif // GAMESTATE_H

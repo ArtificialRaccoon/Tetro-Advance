@@ -5,7 +5,8 @@ void GameState::InitState()
     mmStart( MOD_TETRIS, MM_PLAY_LOOP );
     memcpy16(pal_bg_mem, GAMEUIPal, GAMEUIPalLen/2);
     memcpy32(&tile_mem[0][0], GAMEUITiles, GAMEUITilesLen/4);
-    tte_init_chr4c(1, BG_CBB(2) | BG_SBB(TEXT_LAYER_ID), 0xF000, 0x1E, (u32)&sys8Font, NULL, NULL); //Need to change tghe 0x1E to the right colour index...
+    //Need to change the 0x1E to the right colour index; it's currently a random colour
+    tte_init_chr4c(1, BG_CBB(2) | BG_SBB(TEXT_LAYER_ID), 0xF000, 0x1E, (u32)&sys8Font, NULL, NULL);
     tte_erase_screen();
 }
 
@@ -21,17 +22,45 @@ void GameState::Resume()
 
 void GameState::AquireInput(GameProcessor* game)
 {
-    u16 keys_pressed = ~REG_KEYINPUT & KEY_MASK;
-    if (keys_pressed & KEY_UP)
-        GameContext::Instance()->GetCurrentPiece().Rotate(GameContext::Instance()->PlayGrid(), GameContext::Instance()->ChangedGrid());        
-    else if (keys_pressed & KEY_DOWN)
+    key_poll();
+    unsigned short currentlyPressedButtons = key_hit(KEY_UP | KEY_DOWN | KEY_LEFT | KEY_RIGHT | KEY_A | KEY_B);
+    unsigned short currentlyHeldButtons = key_is_down(KEY_UP | KEY_DOWN | KEY_LEFT | KEY_RIGHT | KEY_A | KEY_B);
+
+    if (currentlyPressedButtons)
+    {
+        HandleInput(currentlyPressedButtons);
+        heldButtons = currentlyHeldButtons;
+        debounceTimer = initial;
+    }
+    else if (heldButtons && currentlyHeldButtons == heldButtons)
+    {
+        if (debounceTimer > 0)
+            debounceTimer--;
+        else
+        {
+            HandleInput(heldButtons);
+            debounceTimer = repeat;
+        }
+    }
+    else
+    {
+        heldButtons = 0;
+        debounceTimer = 0;
+    }
+}
+
+void GameState::HandleInput(unsigned short buttons)
+{
+    if (buttons & KEY_UP)
+        GameContext::Instance()->GetCurrentPiece().Rotate(GameContext::Instance()->PlayGrid(), GameContext::Instance()->ChangedGrid());
+    else if (buttons & KEY_DOWN)
         GameContext::Instance()->GetCurrentPiece().Down(GameContext::Instance()->PlayGrid(), GameContext::Instance()->ChangedGrid());
-    else if (keys_pressed & KEY_LEFT)    
+    else if (buttons & KEY_LEFT)
         GameContext::Instance()->GetCurrentPiece().Left(GameContext::Instance()->PlayGrid(), GameContext::Instance()->ChangedGrid());
-    else if (keys_pressed & KEY_RIGHT)
+    else if (buttons & KEY_RIGHT)
         GameContext::Instance()->GetCurrentPiece().Right(GameContext::Instance()->PlayGrid(), GameContext::Instance()->ChangedGrid());
-    else if ((keys_pressed & KEY_A) || (keys_pressed & KEY_B))
-        GameContext::Instance()->GetCurrentPiece().HardDrop(GameContext::Instance()->PlayGrid(), GameContext::Instance()->ChangedGrid());   
+    else if ((buttons & KEY_A) || (buttons & KEY_B))
+        GameContext::Instance()->GetCurrentPiece().HardDrop(GameContext::Instance()->PlayGrid(), GameContext::Instance()->ChangedGrid());
 }
 
 void GameState::ProcessInput(GameProcessor* game)
@@ -67,20 +96,22 @@ void GameState::Render(GameProcessor* game)
     memcpy16(se_mem[BACKGROUND_LAYER_ID], PLAYAREA, sizeof(PLAYAREA)/2);
 
     //Lines
-    PrintText(std::string("Lines: ") + formatInteger(3, GameContext::Instance()->GetCurrentLines()), 168, 8);
+    PrintText(std::string("Lines: ") + formatInteger(3, GameContext::Instance()->GetCurrentLines()), 168, 5);
 
     //Current Level
-    PrintText(std::string("Level: ") + formatInteger(2, GameContext::Instance()->GetCurrentLevel()), 168, 32);  
+    PrintText(std::string("Level"), 168, 29);  
+    //Need to read the docs to find out why, but this seems to cause the score to render weirdly
+    PrintText(formatInteger(2, GameContext::Instance()->GetCurrentLevel()), 220, 29);
 
     //Score
     PrintText(std::string("Score: ") + formatInteger(6, GameContext::Instance()->GetCurrentScore()), 168, 56);
 
     //Draw Next Piece
+    PrintText(std::string("Next"), 188, 100);
     if(GameContext::Instance()->NextPieceChanged())
     {
-        //clear_to_color(NEXTWINDOW, makecol(57,85,113));
-        //GameContext::Instance()->GetNextPiece().Draw(NEXTWINDOW, GameContext::Instance()->GAMEUI, true);
-        //blit(NEXTWINDOW, BUFFER, 0, 0, 272, 48, blockSize * 4, blockSize * 4);
+        GameContext::Instance()->GetCurrentPiece().Clear();
+        GameContext::Instance()->GetNextPiece().Draw(true);
         GameContext::Instance()->SetNextPieceChanged(false);
     }
 
@@ -91,17 +122,18 @@ void GameState::Render(GameProcessor* game)
         {
             if (GameContext::Instance()->ChangedGrid()[y][x] == true)
             {
-                //if (GameContext::Instance()->PlayGrid()[y][x] > 0)
-                    //blit(GameContext::Instance()->GAMEUI, PLAYGRID, 72 + ((GameContext::Instance()->PlayGrid()[y][x] - 1) * 8), 56, x * blockSize, y * blockSize, blockSize, blockSize);
-                //else
-                    //blit(GameContext::Instance()->GAMEUI, PLAYGRID, 120, 0, x * blockSize, y * blockSize, blockSize, blockSize);
+                int mapIndex = (playGridY + y) * 32 + (playGridX + x);
+                if (GameContext::Instance()->PlayGrid()[y][x] > 0)
+                    se_mem[ACTION_LAYER_ID][mapIndex] = 120 + (GameContext::Instance()->PlayGrid()[y][x] - 1);                    
+                else
+                    se_mem[ACTION_LAYER_ID][mapIndex] = BLANK_TILE;
                 GameContext::Instance()->ChangedGrid()[y][x] = false;
             }
         }
     }    
 
     //Draw Current Piece
-    //GameContext::Instance()->GetCurrentPiece().Draw(PLAYGRID, GameContext::Instance()->GAMEUI, 0);
+    GameContext::Instance()->GetCurrentPiece().Draw(false);
 }
 
 void GameState::DrawBackground()

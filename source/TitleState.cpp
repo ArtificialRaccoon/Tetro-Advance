@@ -41,6 +41,7 @@ void TitleState::AquireInput(GameProcessor* game)
     else if (keys_pressed & KEY_B)
     {
         trigger = true;
+        debounceTimer = 10;
     }
 }
 
@@ -87,4 +88,6 @@ void TitleState::UnloadResources()
 {
     mmStop();
     tte_erase_screen();
+    se_mem[ACTION_LAYER_ID][CURSOR_TILE_POS_PLAY] = BLANK_TILE;
+    se_mem[ACTION_LAYER_ID][CURSOR_TILE_POS_SWAP] = BLANK_TILE;
 }
