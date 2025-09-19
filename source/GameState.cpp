@@ -5,9 +5,26 @@ void GameState::InitState()
     mmStart( MOD_TETRIS, MM_PLAY_LOOP );
     memcpy16(pal_bg_mem, GAMEUIPal, GAMEUIPalLen/2);
     memcpy32(&tile_mem[0][0], GAMEUITiles, GAMEUITilesLen/4);
-    //Need to change the 0x1E to the right colour index; it's currently a random colour
-    tte_init_chr4c(1, BG_CBB(2) | BG_SBB(TEXT_LAYER_ID), 0xF000, 0x1E, (u32)&sys8Font, NULL, NULL);
+    memcpy16(se_mem[BACKGROUND_LAYER_ID], PLAYAREA, sizeof(PLAYAREA)/2);
+
+    tte_init_chr4c(1, BG_CBB(2) | BG_SBB(TEXT_LAYER_ID), 0xF000, bytes2word(13,15,0,0), CLR_WHITE, &verdana9_b4Font, (fnDrawg)chr4c_drawg_b4cts_fast);
     tte_erase_screen();
+
+    PrintText(std::string("Lines"), 168, 5);
+    PrintText(std::string("Level"), 168, 29);
+    PrintText(std::string("Score"), 168, 51);
+    PrintText(std::string("Top"), 168, 74);
+    PrintText(std::string("Next"), 188, 108);
+
+    SCR_ENTRY *map = se_mem[TEXT_LAYER_ID];
+    int tx = 217 >> 3; // tile x
+    int ty =  5 >> 3;  // tile y
+    u16 se = map[ty*32 + tx];
+
+    // Extract info
+    u16 tileIndex = se & 0x03FF;
+    u16 palbank   = (se >> 12) & 0xF;
+    iprintf("SE=%04X Tile=%d Palbank=%d\n", se, tileIndex, palbank);
 }
 
 void GameState::Pause()
@@ -92,22 +109,34 @@ void GameState::ProcessInput(GameProcessor* game)
 
 void GameState::Render(GameProcessor* game)
 {
-    tte_erase_screen();
-    memcpy16(se_mem[BACKGROUND_LAYER_ID], PLAYAREA, sizeof(PLAYAREA)/2);
-
     //Lines
-    PrintText(std::string("Lines: ") + formatInteger(3, GameContext::Instance()->GetCurrentLines()), 168, 5);
+    if(GameContext::Instance()->CurrentLinesChanged())
+    {
+        tte_erase_rect(217, 5, 241, 17);
+        PrintText(formatInteger(3, GameContext::Instance()->GetCurrentLines()), 217, 5);
+    }
 
     //Current Level
-    PrintText(std::string("Level"), 168, 29);  
-    //Need to read the docs to find out why, but this seems to cause the score to render weirdly
-    PrintText(formatInteger(2, GameContext::Instance()->GetCurrentLevel()), 220, 29);
+    if(GameContext::Instance()->CurrentLevelChanged())
+    {
+        tte_erase_rect(224, 29, 241, 41);
+        PrintText(formatInteger(2, GameContext::Instance()->GetCurrentLevel()), 224, 29);
+    }
 
     //Score
-    PrintText(std::string("Score: ") + formatInteger(6, GameContext::Instance()->GetCurrentScore()), 168, 56);
+    if(GameContext::Instance()->CurrentScoreChanged())
+    {
+        tte_erase_rect(168, 61, 210, 73);
+        PrintText(formatInteger(6, GameContext::Instance()->GetCurrentScore()), 168, 61);
+    }
 
-    //Draw Next Piece
-    PrintText(std::string("Next"), 188, 100);
+    if(GameContext::Instance()->TopScoreChanged())
+    {
+        tte_erase_rect(168, 85, 210, 98);
+        PrintText(formatInteger(6, GameContext::Instance()->GetTopScore()), 168, 85);
+    }
+
+    //Draw Next Piece    
     if(GameContext::Instance()->NextPieceChanged())
     {
         GameContext::Instance()->GetCurrentPiece().Clear();
@@ -134,11 +163,6 @@ void GameState::Render(GameProcessor* game)
 
     //Draw Current Piece
     GameContext::Instance()->GetCurrentPiece().Draw(false);
-}
-
-void GameState::DrawBackground()
-{
-
 }
 
 std::string GameState::formatInteger(int leadingZeros, int value)

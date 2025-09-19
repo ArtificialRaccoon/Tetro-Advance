@@ -37,7 +37,6 @@ class GameState : public BaseState
 
     protected:
         GameState() { }
-        void DrawBackground();        
         std::string formatInteger(int leadingZeros, int value);  
     
     private:

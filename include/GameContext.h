@@ -1,6 +1,8 @@
 #ifndef GAMECONTEXT_H
 #define GAMECONTEXT_H
 
+#include <cstdlib>
+#include <ctime>
 #include <string>
 #include <fstream>
 #include <vector>
@@ -79,6 +81,7 @@ class GameContext
         }
 
     private: //Context
+        bool initialized = false;
         bool useSevenBag = true; //Later, add an option to switch randomization
         int topScore = 0;
         int currentScore = 0;        

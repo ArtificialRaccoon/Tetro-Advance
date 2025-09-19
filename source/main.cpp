@@ -21,10 +21,10 @@ int main(void) {
     objGame.InitializeGame();
 	objGame.ChangeState(TitleState::Instance());
     while ( true )
-    {
-        VBlankIntrWait();
+    {        
         objGame.ProcessEvents();
 		objGame.HandleEvents();
+        VBlankIntrWait();
         objGame.Render();
     }
 }

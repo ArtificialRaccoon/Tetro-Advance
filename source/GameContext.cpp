@@ -18,6 +18,7 @@ GameContext::GameContext()
 		128,                    // panning
 	};
 
+    srand(static_cast<unsigned int>(time(0)));
     Reset();
 }
 
@@ -42,10 +43,14 @@ void GameContext::Reset()
         tetrominoTallyChanged[i] = true;
     }
 
-    for (int i = 0; i < playGridHeight; i++) 
+    if(!initialized)
     {
-        playGrid[i] = new int[playGridWidth];
-        changedGrid[i] = new bool[playGridWidth];
+        for (int i = 0; i < playGridHeight; i++) 
+        {
+            playGrid[i] = new int[playGridWidth];
+            changedGrid[i] = new bool[playGridWidth];
+        }
+        initialized = true;
     }
 
     for (int i = 0; i < playGridHeight; i++) 

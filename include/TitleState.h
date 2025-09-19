@@ -35,6 +35,8 @@ class TitleState : public BaseState
     private:
         int selectedItem = 0;
         int debounceTimer = 0;
+        unsigned short heldButtons = 0;
+        const int initial = 10;        
         bool trigger = false;
 };
 

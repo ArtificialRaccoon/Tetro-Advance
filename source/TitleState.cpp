@@ -5,7 +5,7 @@ void TitleState::InitState()
     mmStart( MOD_TITLE, MM_PLAY_LOOP );
     memcpy16(pal_bg_mem, GAMEUIPal, GAMEUIPalLen/2);
     memcpy32(&tile_mem[0][0], GAMEUITiles, GAMEUITilesLen/4);
-    tte_init_chr4c(1, BG_CBB(2) | BG_SBB(TEXT_LAYER_ID), 0xF000, 0x1E, (u32)&sys8Font, NULL, NULL); //Need to change tghe 0x1E to the right colour index...
+    tte_init_chr4c(1, BG_CBB(2) | BG_SBB(TEXT_LAYER_ID), 0xF000, bytes2word(13,15,0,0), CLR_WHITE, NULL, NULL);
     tte_erase_screen();
 }
 
@@ -21,27 +21,41 @@ void TitleState::Resume()
 
 void TitleState::AquireInput(GameProcessor* game)
 {
-    if (debounceTimer > 0)
-    {
-        debounceTimer--;
-        return;
-    }
+    key_poll();
+    unsigned short currentlyPressedButtons = key_hit(KEY_UP | KEY_DOWN | KEY_B);
+    unsigned short currentlyHeldButtons = key_is_down(KEY_UP | KEY_DOWN | KEY_B);
 
-    u16 keys_pressed = ~REG_KEYINPUT & KEY_MASK;
-    if (keys_pressed & KEY_DOWN)
+    if (currentlyPressedButtons)
     {
-        selectedItem++;
-        debounceTimer = 10;
+        if (currentlyPressedButtons & KEY_DOWN)
+            selectedItem++;
+        else if (currentlyPressedButtons & KEY_UP)
+            selectedItem--;
+        else if (currentlyPressedButtons & KEY_B)
+            trigger = true;
+
+        heldButtons = currentlyHeldButtons;
+        debounceTimer = initial;
     }
-    else if (keys_pressed & KEY_UP)
+    else if (heldButtons && currentlyHeldButtons == heldButtons)
     {
-        selectedItem--;
-        debounceTimer = 10;
+        if (debounceTimer > 0)
+            debounceTimer--;
+        else
+        {
+            if (heldButtons & KEY_DOWN)
+                selectedItem++;
+            else if (heldButtons & KEY_UP)
+                selectedItem--;
+            else if (heldButtons & KEY_B)
+                trigger = true;
+            debounceTimer = initial;
+        }
     }
-    else if (keys_pressed & KEY_B)
+    else
     {
-        trigger = true;
-        debounceTimer = 10;
+        heldButtons = 0;
+        debounceTimer = 0;
     }
 }
 
