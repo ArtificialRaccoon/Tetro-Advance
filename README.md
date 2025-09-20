@@ -10,8 +10,8 @@ This is a straight port of my [DOS version](https://github.com/ArtificialRaccoon
 Still has some spitpolish to do, such as figuring what the heck to do on the left side of the screen (since I dont have enough room for the statistics now).
 
 Tooling: 
--(devkitpro)[https://github.com/devkitpro]
--(vscode-gba-dev)[https://github.com/ArtificialRaccoon/vscode-gba-dev]
+- (devkitpro)[https://github.com/devkitpro]
+- (vscode-gba-dev)[https://github.com/ArtificialRaccoon/vscode-gba-dev]
 
 Features:
 
