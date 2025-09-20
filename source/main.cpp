@@ -16,7 +16,7 @@ int main(void) {
     REG_BG0CNT = BG_CBB(0) | BG_SBB(BACKGROUND_LAYER_ID) | BG_8BPP | BG_REG_32x32 | BG_PRIO(2);
     REG_BG1CNT = BG_CBB(2) | BG_SBB(TEXT_LAYER_ID) | BG_4BPP | BG_REG_32x32 | BG_PRIO(1);
     REG_BG2CNT = BG_CBB(0) | BG_SBB(ACTION_LAYER_ID) | BG_8BPP | BG_REG_32x32 | BG_PRIO(0); 
-
+    
 	GameProcessor objGame;
     objGame.InitializeGame();
 	objGame.ChangeState(TitleState::Instance());

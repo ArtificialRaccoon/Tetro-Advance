@@ -8,6 +8,7 @@
 #include "BaseState.h"
 #include "GameState.h"
 #include "TitleState.h"
+#include "GAMEOVER.h"
 
 class GameOverState : public BaseState
 {
@@ -19,6 +20,7 @@ class GameOverState : public BaseState
         void ProcessInput(GameProcessor* game);
         void Render(GameProcessor* game);
         void UnloadResources();
+        void PrintText(std::string text, int x, int y);
         static GameOverState* Instance()
         {
             static GameOverState mGameOverState;
@@ -26,7 +28,14 @@ class GameOverState : public BaseState
         }
 
     protected:
-        GameOverState() { } 
+        GameOverState() { }        
+
+    private:
+        int selectedItem = 0;
+        int debounceTimer = 0;
+        unsigned short heldButtons = 0;
+        const int initial = 10;        
+        bool trigger = false;
 };
 
 #endif // GAMEOVERSTATE_H

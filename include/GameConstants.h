@@ -31,6 +31,8 @@ const int BLANK_TILE = 96;
 const int CURSOR_TILE = 189;
 const int CURSOR_TILE_POS_PLAY = 334;
 const int CURSOR_TILE_POS_SWAP = 398;
+const int CURSOR_TILE_POS_YES = 364;
+const int CURSOR_TILE_POS_NO = 369;
 const int ScoreKey = 69; //Nice.
 
 #endif // GAMECONSTANTS_H

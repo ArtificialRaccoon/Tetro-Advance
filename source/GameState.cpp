@@ -173,6 +173,7 @@ void GameState::UnloadResources()
 {
     mmStop();
     tte_erase_screen();
+    GameContext::Instance()->GetNextPiece().Clear();
 }
 
 void GameState::PrintText(std::string text, int x, int y)

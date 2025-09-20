@@ -84,7 +84,9 @@ void TitleState::Render(GameProcessor* game)
 {
     tte_erase_screen();
     memset16(se_mem[ACTION_LAYER_ID], BLANK_TILE, 32*32);
-    memcpy16(se_mem[BACKGROUND_LAYER_ID], TITLESCREEN, sizeof(TITLESCREEN)/2);    
+    memcpy16(se_mem[BACKGROUND_LAYER_ID], TITLESCREEN, sizeof(TITLESCREEN)/2);
+    
+    //I shouldn't be re-rendering the text every frame but I don't care enough to fix it right now
     PrintText("Play Game", menuXStart, menuYStart);
     PrintText(std::string("Randomizer: ") + (GameContext::Instance()->UseSevenBag() ? "7-Bag" : "TGM"), menuXStart, menuYRandom);
     se_mem[ACTION_LAYER_ID][selectedItem == 0 ? CURSOR_TILE_POS_PLAY : CURSOR_TILE_POS_SWAP] = CURSOR_TILE;
