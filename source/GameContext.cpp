@@ -227,10 +227,15 @@ bool GameContext::ShouldDrop()
 
 void GameContext::SaveTopScore()
 {
-
+    SRAM[0] = ScoreKey;
+    *(int*)(SRAM + 1) = this->GetTopScore();
 }
 
 void GameContext::LoadTopScore()
 {
-
+    if (SRAM[0] == ScoreKey)
+    {
+        int loadedScore = *(int*)(SRAM + 1);
+        this->SetTopScore(loadedScore);  
+    }
 }

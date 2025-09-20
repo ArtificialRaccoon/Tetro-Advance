@@ -43,6 +43,7 @@ ARCH	:=	-mthumb -mthumb-interwork
 CFLAGS	:= -g -O3 -Wall -Werror\
         -mcpu=arm7tdmi -mtune=arm7tdmi \
         -ffast-math -fomit-frame-pointer -funroll-loops \
+        -D__GBA_SRAM__ \
         $(ARCH)
 
 CFLAGS	+=	$(INCLUDE)

@@ -15,16 +15,6 @@ void GameState::InitState()
     PrintText(std::string("Score"), 168, 51);
     PrintText(std::string("Top"), 168, 74);
     PrintText(std::string("Next"), 188, 108);
-
-    SCR_ENTRY *map = se_mem[TEXT_LAYER_ID];
-    int tx = 217 >> 3; // tile x
-    int ty =  5 >> 3;  // tile y
-    u16 se = map[ty*32 + tx];
-
-    // Extract info
-    u16 tileIndex = se & 0x03FF;
-    u16 palbank   = (se >> 12) & 0xF;
-    iprintf("SE=%04X Tile=%d Palbank=%d\n", se, tileIndex, palbank);
 }
 
 void GameState::Pause()

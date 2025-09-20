@@ -1,6 +1,7 @@
 #ifndef GAMECONTEXT_H
 #define GAMECONTEXT_H
 
+#include <tonc.h>
 #include <cstdlib>
 #include <ctime>
 #include <string>

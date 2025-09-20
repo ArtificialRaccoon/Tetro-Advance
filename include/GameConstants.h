@@ -1,6 +1,7 @@
 #ifndef GAMECONSTANTS_H
 #define GAMECONSTANTS_H
 
+#define SRAM ((u8*)0x0E000000)
 const int framesBeforeDrop[20] = { 48, 43, 38, 33, 28, 23, 18, 13, 8, 6, 5, 5, 5, 4, 4, 4, 3, 3, 2, 1 };
 const int blockSize = 8;
 const int playGridX = 10;
@@ -30,7 +31,6 @@ const int BLANK_TILE = 96;
 const int CURSOR_TILE = 189;
 const int CURSOR_TILE_POS_PLAY = 334;
 const int CURSOR_TILE_POS_SWAP = 398;
-
-const char ScoreKey = 0x45; //Nice.
+const int ScoreKey = 69; //Nice.
 
 #endif // GAMECONSTANTS_H

@@ -3,7 +3,7 @@
 void GameOverState::InitState()
 {
     //Save Top Score
-    if(GameContext::Instance()->GetTopScore() > GameContext::Instance()->GetCurrentScore())
+    if(GameContext::Instance()->GetCurrentScore() >= GameContext::Instance()->GetTopScore())
         GameContext::Instance()->SaveTopScore();
 }
 
